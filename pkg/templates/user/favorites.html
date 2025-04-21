@@ -1,0 +1,66 @@
+{% include 'user/header.html' %}
+
+     <div class="row my-5">
+             <div class="col">
+                <div class="row listings">
+                  
+                      {% for prop in bookmark %}
+                    <div class="card " style="width: 18rem;" onclick="window.location.href='/details/{{prop.property.house_id}}'">
+                    <img src="/static/properties/{{ prop.property.cover_image }}" class="card-img-top img-fluid" alt="..." style="width:300px!important; height:200px!important; object-fit:cover;" >
+                    <div class="card-body">
+                      <p class="card-title">{{prop.property.description[:40]}}...</p>
+                      <p class="card-text">Price:&#8358 {{prop.property.house_price|currency}}</p>
+                      <p class="card-text">Location:{{prop.property.location}}</p>
+                     {% if session.get('usertype') == 'tenant' %} <button class="bookmark-prop btn btn-success" data-id="{{ prop.property_id }}" onclick="event.stopPropagation()">
+                          Bookmarked
+                        </button>  {% endif %} 
+                    </div>
+                    </div>
+                    {% endfor %}
+                    <div>
+                        {% if page > 1%}
+                                <a href="{{url_for('favorites',id=tenant.tenant_id ,page=page-1)}}" class='btn btn-success'>Prev</a>
+                                {%endif%}
+                                <span> page {{page}} of {{total_pages}} </span>
+                                {% if page < total_pages %}
+                                <a href="{{url_for('favorites',id=tenant.tenant_id,page=page+1)}}" class="btn btn-success">Next</a>
+                          {%endif%}
+                    </div>
+                    
+                  
+                </div>
+             </div>
+           </div>
+
+           {% include 'user/footer.html' %}
+           
+    <script src="/static/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+           $(".bookmark-prop").click(function (e) {
+            e.preventDefault();
+            var button = $(this);
+            var propertyId = button.data("id");
+            var card = button.closest(".card"); 
+            var data2send = {csrf_token:'{{csrf_token()}}'}
+
+
+            $.ajax({
+              url: '/unbookmark/' + propertyId,
+              method: "POST",
+              data:data2send,
+              success:function(resp){
+                alert(resp);
+                  card.fadeOut(300, function () {
+                  $(this).remove()
+                });
+                },
+                error: function (err) {
+                  console.log(err)
+                }
+                })
+              })
+            })
+    </script>
+</body>
+</html>

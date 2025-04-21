@@ -1,0 +1,89 @@
+{% include 'user/header.html' %}
+        
+     <!-- form section -->
+      <div class="row">
+        <div class="offset-3 col-6 seemore">
+            {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form action="/register/" method="post" novalidate>
+        {{ register.csrf_token}}
+        <div class="mb-3">
+            {{ register.fname.label()}}
+            {{ register.fname(class_='form-control',placeholder='Enter your name')}}
+            {% if register.fname.errors %}
+            {% for error in register.fname.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ register.lname.label()}}
+            {{ register.lname(class_='form-control',placeholder='Enter your name')}}
+            {% if register.lname.errors %}
+            {% for error in register.lname.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ register.email.label()}}
+            {{ register.email(class_='form-control',placeholder='Enter your email')}}
+            {% if register.email.errors %}
+            {% for error in register.email.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ register.password.label()}}
+            {{ register.password(class_='form-control',placeholder='Enter your password')}}
+            {% if register.password.errors %}
+            {% for error in register.password.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ register.confirm_password.label()}}
+            {{ register.confirm_password(class_='form-control',placeholder='Re-enter your password')}}
+            {% if register.confirm_password.errors %}
+            {% for error in register.confirm_password.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+             {{register.user.label()}}
+             {{ register.user()}}
+            {% if  register.user.errors %}
+            {% for error in  register.user.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ register.terms()}}
+             {{register.terms.label()}}  <a href="/terms/">see more</a></label>
+            {% if  register.terms.errors %}
+            {% for error in  register.terms.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ register.register(class='btn btn-success offset-3 col-md-6')}}
+        </div>
+         <div class="text-center" >Already have an account? <a href="/login/" class="text-danger">Click here</a></div>
+    </form>
+        </div>
+      </div>
+
+           {% include 'user/footer.html' %}

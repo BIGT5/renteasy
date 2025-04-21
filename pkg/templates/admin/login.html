@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h3 class="text-center m-5">Admin Log In Page</h3>
+    <!-- form section -->
+      <div class="row">
+        <div class="offset-3 col-6 seemore">
+             {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form action="/admin/login/" method="post" novalidate>
+        {{ login.csrf_token}}
+        <div class="mb-3">
+            {{ login.username.label()}}
+            {{ login.username(class_='form-control',placeholder='Enter username')}}
+            {% if login.username.errors %}
+            {% for error in login.username.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ login.password.label()}}
+            {{ login.password(class_='form-control',placeholder='Enter password')}}
+            {% if login.password.errors %}
+            {% for error in login.password.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ login.login(class='btn btn-success offset-3 col-md-6')}}
+        </div>
+    </form>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

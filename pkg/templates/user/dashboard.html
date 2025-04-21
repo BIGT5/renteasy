@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="pt-0">
+
+<nav class="navbar navbar-expand-md navbar-light bg-light d-md-none px-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">user Panel</span>
+    <div class="dropdown">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-bars"></i> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li class="dropdown-item"><a href="/"><i class="fa-solid fa-house"></i>      Home</a></li>
+                    <li class="dropdown-item"><a href="/dashboard/"><i class="fas fa-tachometer-alt"></i>    Dashboard</a></li>
+                    <li class="dropdown-item"><a href="/user/edit/"><i class="fa-solid fa-cogs"></i>    Profile</a></li>
+                    {% if session.get('usertype') == 'landlord' %}
+                    <li class="dropdown-item"><a href="/listings/process/"><i class="fa-solid fa-house"></i>    Listings</a></li>
+                    <li class="dropdown-item"><a href="/upload/prop/"><i class="fa-solid fa-arrow-circle-up"></i>    Upload properties</a></li>
+                    {% endif %}
+                    {% if session.get('usertype') == 'tenant' %}
+                     <li class="dropdown-item"><a href="/favorites/{{tenant.tenant_id}}"><i class="fa-regular fa-heart"></i>    Favorites</a></li>
+                     {% endif %}
+                    <hr>
+                    <li class="dropdown-item"><a href="/change/password/"><i class="fa-solid fa-undo"></i>     Change Password</a></li>
+                    <!-- <li class="dropdown-item"><a href="#"><i class="fa-solid fa-question-circle"></i>   Close Account</a></li> -->
+                    <li class="dropdown-item"><a href="/logout/"><i class="fa-solid fa-power-off"></i>    Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTAINER -->
+ {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+    <div class="container-fluid">
+      <div class="row con profile p-3" style="min-height: 100vh;">
+
+    <div class="col-md-3 sidebar p-3 d-none d-md-block bg-light">
+      {% if session.get('usertype') == 'tenant' %}
+            <div class="sidehead">
+                <h6>Welcome {{tenant.tenant_fname}}</h6>
+                <p>{{tenant.tenant_email}}</p>
+            </div>
+            {% endif %}
+
+      <div class="body">
+        <ul class="list-unstyled">
+                    <li class="p-2"><a href="/"><i class="fa-solid fa-house"></i>      Home</a></li>
+                    <li class="p-2"><a href="/dashboard/"><i class="fas fa-tachometer-alt"></i>    Dashboard</a></li>
+                    <li class="p-2"><a href="/user/edit/"><i class="fa-solid fa-cogs"></i>    Profile</a></li>
+                    {% if session.get('usertype') == 'landlord' %}
+                    <li class="p-2"><a href="/listings/process/"><i class="fa-solid fa-house"></i>    Listings</a></li>
+                    <li class="p-2"><a href="/upload/prop/"><i class="fa-solid fa-arrow-circle-up"></i>    Upload properties</a></li>
+                    {% endif %}
+                    {% if session.get('usertype') == 'tenant' %}
+                     <li class="p-2"><a href="/favorites/{{tenant.tenant_id}}"><i class="fa-regular fa-heart"></i>    Favorites</a></li>
+                     {% endif %}
+                    <hr>
+                    <li class="p-2"><a href="/change/password/"><i class="fa-solid fa-undo"></i>     Change Password</a></li>
+                    <li class="p-2"><a href="/logout/"><i class="fa-solid fa-power-off"></i>    Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    {% if session.get('usertype') == 'landlord' %}
+    <div class="col-md-8">
+      <div class="row d-flex justify-content-around">
+        <div class="col-md-5 border border-dark p-3">
+             <h3>Account Details:</h3>
+             <hr>
+             <p><b>Name:</b> {{landlord.landlord_fname +' '+ landlord.landlord_lname}}</p>
+             <p><b>Email:</b> {{landlord.landlord_email}}</p>
+            </div>
+
+            <div class="col-md-5 border border-dark p-3">
+              <h3>Address Book:</h3>
+              <hr>
+             <span>{{landlord.address}}</span>
+            </div>
+          </div>
+
+          <div class="row d-flex justify-content-around mt-3">
+            <div class="col-md-10 border border-dark p-3">
+            <div class="d-flex justify-content-between">
+               <h3 class="d-inline-block">Get Latest Updates:<i class="fa-solid fa-pen"></i></h3>
+             <p class="d-inline-block m-0"><i class="fa-solid fa-cogs"></i></p>
+            </div>
+              <hr>
+              <form action="/subscribe/" method="post">
+                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="text" placeholder="Email: " class="form-control" name="email"><br><br>
+                  <input type="text" placeholder="Enter Name: " class="form-control" name="name"><br>
+                  <button type="submit" class="btn btn-success">submit</button>
+
+              </form>
+             
+            </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if session.get('usertype') == 'tenant' %}
+            
+            <div class="col-md-8">
+            <div class="row d-flex justify-content-around">
+            <div class="col-md-5 border border-dark p-3">
+             <h3>Account Details:</h3>
+             <hr>
+             <p>Name: {{tenant.tenant_fname +' '+ tenant.tenant_lname}}</p>
+             <p>Email: {{tenant.tenant_email}}</p>
+            </div>
+
+            <div class="col-md-5 border border-dark p-3">
+              <h3>Phone Number:</h3>
+              <hr>
+             <span>{{tenant.tenant_phone}}</span>
+            </div>
+          </div>
+
+          <div class="row d-flex justify-content-around mt-3">
+            <div class="col-md-10 border border-dark p-3">
+            <div class="d-flex justify-content-between">
+               <h3 class="d-inline-block">Get Latest Updates:<i class="fa-solid fa-pen"></i></h3>
+             <p class="d-inline-block m-0"><i class="fa-solid fa-cogs"></i></p>
+            </div>
+              <hr>
+              <form action="/subscribe/" method="post">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="text" placeholder="Email: " class="form-control" name="email"><br><br>
+                  <input type="text" placeholder="Enter Name: " class="form-control" name="name"><br>
+                  <button type="submit" class="btn btn-success">submit</button>
+              </form>
+             
+            </div>
+          </div>
+
+            </div>
+            {% endif %}
+  </div>
+</div>
+
+<script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

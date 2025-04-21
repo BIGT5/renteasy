@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="pt-0">
+
+<nav class="navbar navbar-expand-md navbar-light bg-light d-md-none px-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">Admin Panel</span>
+    <div class="dropdown">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-bars"></i> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+     <li class="dropdown-item"><a href="/admin/dashboard/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li class="dropdown-item"><a href="/admin/listings/"><i class="fa-solid fa-house"></i> All Listings</a></li>
+          <li class="dropdown-item"><a href="/admin/landlord/"><i class="fa-solid fa-address-card"></i> All Landlords</a></li>
+          <li class="dropdown-item"><a href="/admin/tenant/"><i class="fa-solid fa-address-card"></i> All Tenants</a></li>
+          <li class="dropdown-item"><a href="/blocked/landlord/"><i class="fa-regular fa-folder"></i> Blocked Landlords</a></li>
+          <li class="dropdown-item"><a href="/blocked/tenant/"><i class="fa-regular fa-folder"></i> Blocked Tenants</a></li>
+          <li class="dropdown-item"><a href="/admin/logout/"><i class="fa-solid fa-power-off"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTAINER -->
+<div class="container-fluid">
+  <div class="row con profile p-3" style="min-height: 100vh;">
+
+    <div class="col-md-3 sidebar p-3 d-none d-md-block bg-light">
+      {% if session.get('usertype') == 'admin' %}
+      <div class="sidehead">
+        <h6>Welcome {{ admin.admin_username }}</h6>
+      </div>
+      {% endif %}
+
+      <div class="body">
+        <ul class="list-unstyled">
+          <li class="p-2"><a href="/admin/dashboard/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li class="p-2"><a href="/admin/listings/"><i class="fa-solid fa-house"></i> All Listings</a></li>
+          <li class="p-2"><a href="/admin/landlord/"><i class="fa-solid fa-address-card"></i> All Landlords</a></li>
+          <li class="p-2"><a href="/admin/tenant/"><i class="fa-solid fa-address-card"></i> All Tenants</a></li>
+          <li class="p-2"><a href="/blocked/landlord/"><i class="fa-regular fa-folder"></i> Blocked Landlords</a></li>
+          <li class="p-2"><a href="/blocked/tenant/"><i class="fa-regular fa-folder"></i> Blocked Tenants</a></li>
+          <li class="p-2"><a href="/admin/logout/"><i class="fa-solid fa-power-off"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    {% if session.get('usertype') == 'admin' %}
+    <div class="col-md-9">
+      <div class="row d-flex justify-content-around">
+        <div class="col-md-3 border border-dark p-3 bg-success text-white">
+          <h5>Number of registered users</h5>
+          <hr>
+          <p><b>Landlords:</b> {{ landlord|length }}</p>
+          <p><b>Tenants:</b> {{ tenant|length }}</p>
+        </div>
+        <div class="col-md-3 border border-dark p-3 bg-info text-white">
+          <h5>Number of listed properties</h5>
+          <hr>
+          <p><b>All listings:</b> {{ vacant|length }}</p>
+        </div>
+        <div class="col-md-3 border border-dark p-3 bg-primary text-white">
+          <h5>Number of blocked accounts</h5>
+          <hr>
+          <p><b>Landlords Blocked:</b> {{blocked_landlord|length}}</p>
+          <p><b>Tenants Blocked:</b> {{blocked_tenant|length}}</p>
+        </div>
+      </div>
+      <div class="row">
+     <div class="col table-responsive-sm">
+      <h5 class="text-center mt-5 mb-0 " style="text-decoration: underline;">Newest Listings</h5>
+         <table class="table table-striped table-hover mt-0">
+          <thead>
+            <tr>
+              <th scope="col">S/N</th>
+              <th scope="col">Cover </th>
+              <th scope="col">Price</th>
+              <th scope="col">Type</th>
+              <th scope="col">Landlord_id</th>
+              <th scope="col">Status</th>
+              <th scope="col">Is_Featured</th>
+              <th scope="col">Location</th>
+              <th scope="col">Address</th>
+              <th scope="col">Description</th>
+              <th scope="col">Date_listed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for listing in new %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td><img src="/static/properties/{{ listing.cover_image }}" alt="Cover Image" style="width: 50px; height: 50px;"></td>
+              <td>{{ listing.price }}</td>
+              <td>{{ listing.type }}</td>
+              <td>{{ listing.landlord_id }}</td>
+              <td>{{ listing.status }}</td>
+              <td>{{ listing.is_featured }}</td>
+              <td>{{ listing.location }}</td>
+              <td>{{ listing.address }}</td>
+              <td>{{ listing.description }}</td>
+              <td>{{ listing.date_listed }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+     </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

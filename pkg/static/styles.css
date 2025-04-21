@@ -1,0 +1,155 @@
+ *{
+            margin: 0px;
+            padding: 0px;
+        }
+
+        body{
+            padding-top: 70px;
+        }
+        .navindex{
+            background-color: #6AA891;
+            position: fixed;
+            width:100%;
+            min-height: 90px;
+            padding-top: 40px;
+            z-index: 100;
+        }
+        .navb{
+            background-color: #6AA891;
+            width:100%;
+            min-height: 50px;
+            padding-top: 20px;
+            z-index: 100;
+        }
+
+        .reg,.log{
+            text-decoration: none;
+        }
+
+        .banner{
+            background-image: url("/static/img/rentbanner.jpg");
+            background-position: fixed;
+            background-size: cover;
+            margin: 0;
+            width:100%;
+            min-height: 500px;
+        }
+        .header{
+            background-color: rgba(0,0,0,0.5);
+            height: inherit;
+        }
+       @media screen and (min-width:768px){
+         .bannerh1{
+            text-align: center;
+            padding-top: 180px;
+        } 
+
+        #seemore,#seemore1{
+            position: relative;
+            right: 0px;
+            left: 980px;
+        }
+         #seemore1{
+            position: relative;
+            right: 0px;
+            left: 920px;
+        }
+       }
+        @media screen and (max-width:767px){
+         .bannerh1{
+            text-align: center;
+            padding-top: 70px;
+        } 
+       }
+        .formfilter{
+            border-radius: 5px;
+        }
+        .welcome span{
+         border-bottom: 3px solid #6AA891;
+        }
+        .choose div{
+             border-radius: 10px;
+             border: 2px solid black;
+             box-shadow: 1px 1px 5px #6AA891;
+
+        }
+        .choose a{
+          color: black !important;
+        }
+        .foot{
+             background-color: #6AA891;
+        }
+        .foot ul li a ,a{
+            text-decoration: none;
+            color: white;
+        }
+        #seemore a{
+            color:black !important;
+        }
+        
+        a:hover{
+            color:black !important;
+            text-decoration: underline !important;
+        }
+        .clicky a{
+            font-size: 20px;
+            font-family: cursive;
+        }
+        .seemore a {
+            text-decoration: none;
+            color: red !important;
+        }
+        button a{
+            color: black !important;
+        }
+        .navindex li a, .navb li a{
+            font-family: cursive;
+        }
+        .menu ul li a{
+            display: block;
+            text-decoration: none !important;
+            color: black !important; 
+        }
+         .menu ul li:hover{
+           border: 1px solid black;
+           background-color: lightblue;
+        }
+         .sidebar ul li a{
+            display: block;
+            text-decoration: none !important;
+            color: black !important; 
+        }
+         .sidebar ul li:hover{
+           border: 1px solid black;
+           background-color: lightblue;
+        }
+        .sidebar{
+            border: 1px solid grey;
+            /* width: 280px; */
+            top: 0;
+            left: 0;
+            z-index: 200;
+        }
+        .profile{
+            min-height: 500px;
+        }
+        .login-link:hover{
+            color: red !important;
+        }
+
+        .card{
+            margin: 13px;
+        }
+
+        .card:hover{
+            box-shadow: 2px 2px 2px 2px gray;
+        }
+        .carousel-inner {
+        overflow: hidden;
+       }
+       .hd{
+        text-decoration: underline;
+       }
+       .dropdown-menu li a{
+        color: black !important;
+       }

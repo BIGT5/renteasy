@@ -1,0 +1,45 @@
+{% include 'user/header.html' %}
+     
+     <h3 class="text-center hd">House Details</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-8 offset-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner ratio ratio-16x9">
+                       {% if pics != None %}
+                         {% for p in pics %}
+                        <div class="carousel-item active">
+                        <img src="/static/properties/{{ p.pictures }}" class="d-block w-100 h-100 img-fluid" alt="...">
+                        </div>
+                        {% endfor %}
+                       {% endif %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    </div>
+                    {% if session.get('usertype') == 'tenant' %}<p class="mt-3"><b>Contact Owner: {{prop.landlord.landlord_email}}</b></p>{% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p class="border border-gray py-2 ps-2 pe-5 bg-light"><b>House Type:</b> {{prop.house_type.type_name}}</p>
+                        <p class="border border-gray py-2 ps-2 pe-5 bg-light"><b>Description:</b> {{prop.description}}</p>
+                        <p class="border border-gray py-2 ps-2 pe-5 bg-light"><b>Price:</b>&#8358 {{prop.house_price|currency}}</p>
+                        <p class="border border-gray py-2 ps-2 pe-5 bg-light"><b>Address:</b> {{prop.address}}</p>
+                        <p class="border border-gray py-2 ps-2 pe-5 bg-light"><b>Location:</b> {{prop.location}}</p>
+                        <p class="border border-gray py-2 ps-2 pe-5 bg-light"><b>Status:</b> {{prop.house_status}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% include 'user/footer.html' %}
+
+</body>
+</html>

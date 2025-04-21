@@ -1,0 +1,46 @@
+{% include 'user/header.html' %}
+        
+     <!-- form section -->
+      <div class="row">
+        <div class="offset-3 col-6">
+            {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form action="/login/" method="post" novalidate>
+        {{ login.csrf_token}}
+        <div class="mb-3">
+            {{ login.email.label()}}
+            {{ login.email(class_='form-control',placeholder='Enter your email')}}
+            {% if login.email.errors %}
+            {% for error in login.email.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ login.password.label()}}
+            {{ login.password(class_='form-control',placeholder='Enter your password')}}
+            {% if login.password.errors %}
+            {% for error in login.password.errors %}
+                <p class="text-danger">{{error}}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ login.login(class='btn btn-success offset-3 col-md-6')}}
+        </div>
+         <div class="text-center">Don't have an account? <a href="/register/" class="text-danger login-link">Click here</a></div>
+    </form>
+        </div>
+      </div>
+
+          {% include 'user/footer.html' %}
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% include 'user/header.html' %}
+        
+     <!-- form section -->
+      <div class="row">
+        <div class="offset-3 col-6">
+            <form action="/send/email" class="my-3" method="post">
+               {% set msg = get_flashed_messages(with_categories=True) %}
+                {% if msg %}
+                    {% for cat,message in msg %}
+                        {% if cat == 'failed' %}
+                            <p class="alert alert-danger">{{message}}</p>
+                        {% else %}
+                            <p class="alert alert-success">{{message}}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <h1 class="text-center">Advertisement</h1>
+                <label for="email" class="form-label pt-3">Your Emial:</label>
+                <input type="email" name="email" id="email" placeholder="your email" class="form-control">
+
+                <label for="textarea" class="form-label pt-3">What you would like us to Advertise:</label>
+               <textarea name="textarea" id="textA" class="form-control"></textarea>
+
+                <button type="submit" id="btnreg" class="btn btn-success offset-3 col-6 d-block mt-3">submit</button>
+            </form>
+        </div>
+      </div>
+
+           {% include 'user/footer.html' %}
+</body>
+</html>

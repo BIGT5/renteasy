@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Rent-Easy</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
+  <div class="container-fluid navindex pt-5">
+    <span><img src="/static/img/logo2.png" width="60"><a class="navbar-brand text-white" href="/" >Rent-Easy</a></span>
+    <button class="navbar-toggler my-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/about/">About us</a>
+        </li>
+        {% if session.get('useronline') == None %}
+         <li class="nav-item">
+          <a class="nav-link text-white" href="/register/">Register</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/login/">Log-in</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/interface/">Properties</a>
+        </li>
+        {% if session.get('useronline') != None %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if session.get('usertype') == 'landlord' and landlord %} <img src="/static/uploads/{{landlord.profile_pictures}}" width="30" style="border-radius: 50%;">Hi  {{session.get('username')}} {% elif session.get('usertype') == 'tenant' and tenant %}  <img src="/static/uploads/{{tenant.profile_pictures}}" width="30" style="border-radius: 50%;"> {{session.get('username')}} {% endif %} 
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/dashboard/">Profile</a></li>
+             {% if session.get('usertype') != 'landlord' %}
+            <li><a class="dropdown-item" href="/favorites/{{tenant.tenant_id}}">Favorites</a></li>
+             {% endif %}
+             {% if session.get('usertype') != 'tenant' %}
+            <li><a class="dropdown-item" href="/listings/">listings</a></li>
+             {% endif %}
+            <li><a class="dropdown-item" href="/logout/">Logout</a></li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

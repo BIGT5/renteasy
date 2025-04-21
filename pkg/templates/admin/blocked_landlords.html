@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="pt-0">
+
+<nav class="navbar navbar-expand-md navbar-light bg-light d-md-none px-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">Admin Panel</span>
+    <div class="dropdown">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-bars"></i> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+      <li class="dropdown-item"><a href="/admin/dashboard/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li class="dropdown-item"><a href="/admin/listings/"><i class="fa-solid fa-house"></i> All Listings</a></li>
+          <li class="dropdown-item"><a href="/admin/landlord/"><i class="fa-solid fa-address-card"></i> All Landlords</a></li>
+          <li class="dropdown-item"><a href="/admin/tenant/"><i class="fa-solid fa-address-card"></i> All Tenants</a></li>
+          <li class="dropdown-item"><a href="/blocked/landlord/"><i class="fa-regular fa-folder"></i> Blocked Landlords</a></li>
+          <li class="dropdown-item"><a href="/blocked/tenant/"><i class="fa-regular fa-folder"></i> Blocked Tenants</a></li>
+          <li class="dropdown-item"><a href="/admin/logout/"><i class="fa-solid fa-power-off"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTAINER -->
+<div class="container-fluid">
+  <div class="row con profile p-3" style="min-height: 100vh;">
+
+    <div class="col-md-3 sidebar p-3 d-none d-md-block bg-light">
+      {% if session.get('usertype') == 'admin' %}
+      <div class="sidehead">
+        <h6>Welcome {{ admin.admin_username }}</h6>
+      </div>
+      {% endif %}
+
+      <div class="body">
+        <ul class="list-unstyled">
+         <li class="p-2"><a href="/admin/dashboard/"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li class="p-2"><a href="/admin/listings/"><i class="fa-solid fa-house"></i> All Listings</a></li>
+          <li class="p-2"><a href="/admin/landlord/"><i class="fa-solid fa-address-card"></i> All Landlords</a></li>
+          <li class="p-2"><a href="/admin/tenant/"><i class="fa-solid fa-address-card"></i> All Tenants</a></li>
+          <li class="p-2"><a href="/blocked/landlord/"><i class="fa-regular fa-folder"></i> Blocked Landlords</a></li>
+          <li class="p-2"><a href="/blocked/tenant/"><i class="fa-regular fa-folder"></i> Blocked Tenants</a></li>
+          <li class="p-2"><a href="/admin/logout/"><i class="fa-solid fa-power-off"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    {% if session.get('usertype') == 'admin' %}
+    <div class="col-md-9">
+      <div class="row d-flex justify-content-around">
+            <div class="table-responsive-md" style="max-height: 500px; overflow-y: auto;">
+                <table class="table table-success table-striped table-hover" id="main-table">
+                <thead>
+                    <tr>
+                    <th scope="col">S/N</th>
+                    <th scope="col">Profile picture</th>
+                    <th scope="col">Firstname</th>
+                    <th scope="col">Lastname</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Date Registered</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="listing-table">
+                   
+                </tbody>
+                </table>
+
+            </div>
+            
+            </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/static/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+ <script>
+    $(document).ready(function(){
+
+       var data2send = {id:"{{session.get('useronline')}}",csrf_token:'{{csrf_token()}}'}
+
+           $.ajax({
+                url: '/blocked/landlord/',
+                type: 'POST',
+                data: data2send,
+                success: function(resp){
+                   if ($.fn.DataTable.isDataTable('#main-table')) {
+                              $('#main-table').DataTable().destroy();
+                          }
+
+                    $('#listing-table').html(resp);
+
+
+                    $('#main-table').DataTable({
+                                  pageLength: 4,
+                                  paging: true,
+                                  searching: false,
+                                  ordering: true,
+                                  lengthChange: false,
+                                });
+                    
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+
+            $(document).on('click', '.toggle-block', function (e) {
+            e.preventDefault();
+            var landlordId = $(this).data('id');
+
+            $.ajax({
+                url: '/admin/blocked/' + landlordId,
+                type: 'POST',
+                data: { csrf_token: "{{ csrf_token() }}" },
+                success: function(){
+                    $.ajax({
+                        url: '/blocked/landlord/',
+                        type: 'POST',
+                        data: data2send,
+                        success: function (resp) {
+                           if ($.fn.DataTable.isDataTable('#main-table')) {
+                              $('#main-table').DataTable().destroy();
+                          }
+                            $('#listing-table').html(resp);
+
+                            $('#main-table').DataTable({
+                                  pageLength: 4,
+                                  paging: true,
+                                  searching: false,
+                                  ordering: true,
+                                  lengthChange: false,
+                                });
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+                });
+                });
+
+            $(document).on('click','.delete', function (e) {
+            e.preventDefault();
+            var landlordId = $(this).data('id');
+
+            $.ajax({
+                url: '/admin/delete/' + landlordId,
+                type: 'POST',
+                data: { csrf_token: "{{ csrf_token() }}" },
+                success: function(resp){
+                  alert(resp);
+                      $.ajax({
+                        url: '/blocked/landlord/',
+                        type: 'POST',
+                        data: data2send,
+                        success: function (resp) {
+                           if ($.fn.DataTable.isDataTable('#main-table')) {
+                              $('#main-table').DataTable().destroy();
+                          }
+                            $('#listing-table').html(resp);
+
+                            $('#main-table').DataTable({
+                                  pageLength: 4,
+                                  paging: true,
+                                  searching: false,
+                                  ordering: true,
+                                  lengthChange: false,
+                                });
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+               });
+              });
+
+
+            
+            })
+</script>
+</body>
+</html>

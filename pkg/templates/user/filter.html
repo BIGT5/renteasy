@@ -1,0 +1,75 @@
+{% include 'user/header.html' %}
+        
+      <div class="container-fluid mx-auto">
+        <div class="row">
+       
+        {% for prop in all_houses %}
+            <div class="card " style="width: 17rem;" onclick="window.location.href='/details/{{prop.house_id}}'">
+            <img src="/static/properties/{{ prop.cover_image }}" class="card-img-top img-fluid" alt="..." style="width:300px!important; height:200px!important; object-fit:cover;" >
+            <div class="card-body">
+              <p class="card-title">{{prop.description}}</p>
+              <p class="card-text">Price:&#8358 {{prop.house_price|currency}}</p>
+              <p class="card-text">Location:{{prop.location}}</p>
+              {% if session.get('usertype') == 'tenant' %} <button class="bookmark-prop btn btn-success" data-id="{{ prop.house_id }}" onclick="event.stopPropagation()">
+                  Bookmark
+                </button>  {% endif %} 
+            </div>
+            </div>
+        {% endfor %}
+        <div>
+            {% if page > 1%}
+                    <a href="{{url_for('filter',page=page-1,location=request.args.get('location'), type=request.args.get('type'), min=request.args.get('min'), max=request.args.get('max'))}}" class='btn btn-success'>Prev</a>
+                    {%endif%}
+                    <span> page {{page}} of {{total_pages}} </span>
+                    {% if page < total_pages %}
+                    <a href="{{url_for('filter',page=page+1,location=request.args.get('location'), type=request.args.get('type'), min=request.args.get('min'), max=request.args.get('max'))}}" class="btn btn-success">Next</a>
+              {%endif%}
+        </div>
+      </div> 
+    </div>
+
+           {% include 'user/footer.html' %}
+
+ <script src="/static/jquery-3.7.1.min.js"></script>
+    <script>
+$(document).ready(function(){
+
+    $(".bookmark-prop").click(function (e) {
+    e.preventDefault();
+    var button = $(this);
+    var propertyId = button.data("id");
+    var isBookmarked = button.html() === 'Bookmarked'; 
+    var url = isBookmarked ? '/unbookmark/' + propertyId : '/bookmark/' + propertyId;
+
+    var data2send = {csrf_token:'{{csrf_token()}}'}
+
+
+    $.ajax({
+      url: url,
+      method: "POST",
+      data:data2send,
+      beforeSend: function(){button.html('Bookmark');},
+      success:function(resp){
+          if (isBookmarked) {
+                    button.html('Bookmark'); 
+                    alert(resp);
+                } else {
+                    button.html('Bookmarked');
+                    alert(resp); 
+                }
+      },
+      error: function (err) {
+        console.log(err)
+      },
+      complete: function(){
+         button.html('Bookmarked');
+        }
+       });
+      });
+   
+      });
+  
+</script>
+
+</body>
+</html>

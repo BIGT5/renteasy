@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/static/fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="pt-0">
+
+<nav class="navbar navbar-expand-md navbar-light bg-light d-md-none px-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">user Panel</span>
+    <div class="dropdown">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-bars"></i> Menu
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                     <li class="dropdown-item"><a href="/"><i class="fa-solid fa-house"></i>      Home</a></li>
+                    <li class="dropdown-item"><a href="/dashboard/"><i class="fas fa-tachometer-alt"></i>    Dashboard</a></li>
+                    <li class="dropdown-item"><a href="/user/edit/"><i class="fa-solid fa-cogs"></i>    Profile</a></li>
+                    {% if session.get('usertype') == 'landlord' %}
+                    <li class="dropdown-item"><a href="/listings/process/"><i class="fa-solid fa-house"></i>    Listings</a></li>
+                    <li class="dropdown-item"><a href="/upload/prop/"><i class="fa-solid fa-arrow-circle-up"></i>    Upload properties</a></li>
+                    {% endif %}
+                    {% if session.get('usertype') == 'tenant' %}
+                     <li class="dropdown-item"><a href="/favorites/{{tenant.tenant_id}}"><i class="fa-regular fa-heart"></i>    Favorites</a></li>
+                     {% endif %}
+                    <hr>
+                    <li class="dropdown-item"><a href="/change/password/"><i class="fa-solid fa-undo"></i>     Change Password</a></li>
+                    <li class="dropdown-item"><a href="#"><i class="fa-solid fa-question-circle"></i>   Close Account</a></li>
+                    <li class="dropdown-item"><a href="/logout/"><i class="fa-solid fa-power-off"></i>    Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTAINER -->
+ {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+<div class="container-fluid">
+  <div class="row con profile p-3" style="min-height: 100vh;">
+
+    <div class="col-md-3 sidebar p-3 d-none d-md-block bg-light">
+      {% if session.get('usertype') == 'tenant' %}
+            <div class="sidehead">
+                <h6>Welcome {{tenant.tenant_fname}}</h6>
+                <p>{{tenant.tenant_email}}</p>
+            </div>
+            {% endif %}
+
+      <div class="body">
+        <ul class="list-unstyled">
+             <li class="p-2"><a href="/"><i class="fa-solid fa-house"></i>      Home</a></li>
+                    <li class="p-2"><a href="/dashboard/"><i class="fas fa-tachometer-alt"></i>    Dashboard</a></li>
+                    <li class="p-2"><a href="/user/edit/"><i class="fa-solid fa-cogs"></i>    Profile</a></li>
+                    {% if session.get('usertype') == 'landlord' %}
+                    <li class="p-2"><a href="/listings/process/"><i class="fa-solid fa-house"></i>    Listings</a></li>
+                    <li class="p-2"><a href="/upload/prop/"><i class="fa-solid fa-arrow-circle-up"></i>    Upload properties</a></li>
+                    {% endif %}
+                    {% if session.get('usertype') == 'tenant' %}
+                     <li class="p-2"><a href="/favorites/{{tenant.tenant_id}}"><i class="fa-regular fa-heart"></i>    Favorites</a></li>
+                     {% endif %}
+                    <hr>
+                    <li class="p-2"><a href="/change/password/"><i class="fa-solid fa-undo"></i>     Change Password</a></li>
+                    <li class="p-2"><a href="#"><i class="fa-solid fa-question-circle"></i>   Close Account</a></li>
+                    <li class="p-2"><a href="/logout/"><i class="fa-solid fa-power-off"></i>    Logout</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+        <div class="col-md-8 mt-3">
+             {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if session.get('usertype') == 'landlord' %}
+
+            <div class="row">
+            <div class="col table-responsive-md" style="max-height: 500px;">
+                <table class="table table-success table-striped table-hover" id="main-table">
+                <caption>All Listings</caption>
+                <thead>
+                    <tr>
+                    <th scope="col">S/N</th>
+                    <th scope="col">Cover</th>
+                    <th scope="col">House_price</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Address_located</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date_listed</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="listing-table">
+                   
+                </tbody>
+                </table>
+
+            </div>
+            
+            </div>
+            {% endif %}
+
+        </div>
+
+
+
+
+    
+  </div>
+</div>
+
+<script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/static/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function(){
+
+       var data2send = {id:"{{session.get('useronline')}}",csrf_token:'{{csrf_token()}}'}
+
+           $.ajax({
+                url: '/listings/process/',
+                type: 'POST',
+                data: data2send,
+                success: function(resp){
+                    $('#listing-table').html(resp)
+                    
+                    // added the below code from the plugin to handle empty table alert error when my query doesnt return any data
+                    $.fn.dataTable.ext.errMode = function(settings, techNote, message) {
+                      if (techNote === 18) {
+                          console.warn("Custom DataTables Warning: The table is empty.");
+                          $('#error-message-container').text("The table is empty. Please add data.");
+                          $('#error-message-container').show(); 
+                      } else {
+                          console.warn("DataTables Error:", message);
+                      }
+                  };
+
+                    $('#main-table').DataTable({
+                      pageLength: 5,
+                      paging: true,
+                      searching: false,
+                      ordering: true,
+                      lengthChange: false,
+                    });
+
+                    
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+            })
+</script>
+</body>
+</html>
+
+

@@ -1,0 +1,208 @@
+{% include 'user/header.html' %}
+         {% set msg = get_flashed_messages(with_categories=True) %}
+            {% if msg %}
+                {% for cat,message in msg %}
+                    {% if cat == 'failed' %}
+                        <p class="alert alert-danger">{{message}}</p>
+                    {% else %}
+                        <p class="alert alert-success">{{message}}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        <div class="row banner">
+            <div class="col-md header">
+                <h1 class="text-white text-center bannerh1">Search For Houses</h1>
+                <div class="row">
+                <div class="col">
+              <form class=" bg-white py-3 px-3 formfilter" role="search" action="/filter/" method="get">
+                <!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> -->
+              <div class="row ms-md-5">
+                <div class="col-md-3 mt-1">
+                 <select name="location" class="form-control" required>
+                <option value="">Select State</option>
+                {% for state in all_states %}
+                 <option value="{{ state.state_name }}">
+                {{ state.state_name }}
+                 </option>
+                 {% endfor %}
+                </select>
+                </div>
+                <div class="col-md-3 ps-md-1 mt-1">
+                    <select name="type" class="form-control" required>
+                    <option value="">House Type</option>
+                    {% for type in all_types %}
+                        <option value="{{ type.house_id }}">
+                        {{ type.type_name }}
+                        </option>
+                    {% endfor %}
+                    </select>
+                </div>
+                 <div class="col-md-2 ps-md-1 mt-1">
+                    <input type="number" name="min" id="min" type="search" placeholder="Min-price"class="form-control " required>
+                 </div>
+                <div class="col-md-2 ps-md-1 mt-1">
+                     <input type="number" name="max" id="max" type="search" placeholder="Max-price"class="form-control " required>
+                </div>
+              <div class="col-md-2 ps-md-1 mt-1" >
+                  <button class=" btn btn-primary text-white border border-white" type="submit">Search</button>
+              </div>
+              </div>
+            </form>
+                    </div>
+                </div>
+                 
+           <!-- colends -->
+            </div>         
+         </div>
+
+         
+         <!-- second section -->
+          <div class="row my-3">
+            <div class="col">
+                <h1 class="text-center welcome my-5">WELC<span>OME TO RENT-E</span>ASY</h1>
+            </div>
+            {% if session.get('useronline') == None %}
+            <div class="row ms-md-auto my-3 choose">
+            <div class="col-md-5 mx-md-5 mt-1 ms-2 border border-info clicky">
+                    <p>Are you a landlord looking for tenants?</p>
+                    <a href="/register/">click here! <img src="/static/img/finger-pointing.gif" alt="" width="30"></a>
+                </div>
+                <div class="col-md-5 border mt-1 ms-2 border-info clicky">
+                     <p>Are you a potential tenant looking for accomodation?</p>
+                    <a href="/register/">click here! <img src="/static/img/finger-pointing.gif" alt="" width="30"></a>
+                </div>
+            </div>
+              {% endif %}
+          </div>
+        
+          
+          <!-- second section close -->
+
+          <!-- feature listings -->
+
+         <div class="row my-5">
+             <div class="col">
+                <h2 class="d-inline-block">Featured Listings</h2>
+                <p id="seemore1" class="d-inline-block"><a href="/interface/"><img src="/static/img/fast-forward.gif" alt="fast-forward" width="60"></a></p>
+                <div class="row listings">
+                  
+                      {% for prop in prop %}
+                    <div class="card " style="width: 18rem;" onclick="window.location.href='/details/{{prop.house_id}}'">
+                    <img src="/static/properties/{{ prop.cover_image }}" class="card-img-top img-fluid" alt="..." style="width:300px!important; height:200px!important; object-fit:cover;" >
+                    <div class="card-body">
+                      <p class="card-title line-clamp-2">{{prop.description[:40]}}...</p>
+                      <p class="card-text line-clamp-1">Price:&#8358 {{prop.house_price|currency}}</p>
+                      <p class="card-text line-clamp-1">Location:{{prop.location}}</p>
+                     {% if session.get('usertype') == 'tenant' %} <button class="bookmark-prop btn btn-success" data-id="{{ prop.house_id }}" onclick="event.stopPropagation()">
+                          Bookmark
+                        </button>  {% endif %} 
+                    </div>
+                    </div>
+                    {% endfor %}
+                  
+                </div>
+             </div>
+           </div>
+
+
+         <!-- featured listings close -->
+
+
+          <!-- third element -->
+           <div class="row my-5">
+             <div class="col">
+                <h2 class="d-inline-block">New Listings</h2>
+                <p id="seemore" class="d-inline-block"><a href="/interface/"><img src="/static/img/fast-forward.gif" alt="fast-forward" width="60"></a></p>
+                <div class="row listings">
+                    {% for new in new %}
+                    <div class="card " style="width: 18rem;" onclick="window.location.href='/details/{{new.house_id}}'">
+                    <img src="/static/properties/{{ new.cover_image }}" class="card-img-top img-fluid" alt="..." style="width:300px!important; height:200px!important; object-fit:cover;" >
+                    <div class="card-body">
+                      <p class="card-title" >{{new.description[:40]}}...</p>
+                      <p class="card-text ">Price:&#8358.{{new.house_price|currency}}</p>
+                      <p class="card-text">Location:{{new.location}}</p>
+                       {% if session.get('usertype') == 'tenant' %} <button class="bookmark-new btn btn-success" data-id="{{ new.house_id }}" onclick="event.stopPropagation()">
+                          Bookmark
+                        </button>  {% endif %}
+                    </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+             </div>
+           </div>
+
+{% include 'user/footer.html' %}
+
+    <script src="/static/jquery-3.7.1.min.js"></script>
+    <script>
+$(document).ready(function () {
+      $(".bookmark-new").click(function (e) {
+        e.preventDefault();
+        var button = $(this);
+        var propertyId = button.data("id");
+        var isBookmarked = button.html() === 'Bookmarked'; 
+        var url = isBookmarked ? '/unbookmark/' + propertyId : '/bookmark/' + propertyId;
+
+        var data2send = {csrf_token:'{{csrf_token()}}'}
+
+
+        $.ajax({
+          url: url,
+          method: "POST",
+          data:data2send,
+          beforeSend: function(){button.html('Bookmark');},
+          success:function(resp){
+            if (isBookmarked) {
+                        button.html('Bookmark'); 
+                        alert(resp);
+                    } else {
+                        button.html('Bookmarked'); 
+                        alert(resp); 
+                    }
+          },
+          error: function (err) {
+            console.log(err)
+          },
+          complete: function(){
+              button.html('Bookmarked');
+            }
+           });
+           });
+
+          $(".bookmark-prop").click(function (e) {
+            e.preventDefault();
+            var button = $(this);
+            var propertyId = button.data("id");
+            var isBookmarked = button.html() === 'Bookmarked'; 
+            var url = isBookmarked ? '/unbookmark/' + propertyId : '/bookmark/' + propertyId;
+
+            var data2send = {csrf_token:'{{csrf_token()}}'}
+
+
+          $.ajax({
+            url: url,
+            method: "POST",
+            data:data2send,
+            beforeSend: function(){button.html('Bookmark');},
+            success:function(resp){
+                if (isBookmarked) {
+                          button.html('Bookmark'); 
+                          alert(resp);
+                      } else {
+                          button.html('Bookmarked');
+                          alert(resp); 
+                      }
+            },
+            error: function (err) {
+              console.log(err)
+            },
+            complete: function(){
+              button.html('Bookmarked');
+              }
+             });
+             });
+            });
+</script>
+</body>
+</html>
